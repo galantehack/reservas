@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva de Servicios de Belleza y Spa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para la imagen de fondo */
+        .bg-auto {
+            background-image: url("{{ url_for('static', filename='imagenes/beauty-salon-4043096_1280.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh; /* Asegura que el fondo cubra toda la pantalla */
+        }
+
+        /* Animación para un fade-in */
+        .animate-fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Estilos para el menú */
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.7); /* Fondo semi-transparente */
+        }
+
+        .navbar a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Estilo para el botón de enviar */
+        .submit-button {
+            background-color: #3B82F6; /* Azul */
+            color: white;
+            font-weight: bold;
+            border-radius: 0.375rem; /* rounded-lg */
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #2563EB; /* Azul más oscuro */
+            transform: scale(1.05);
+        }
+
+        /* Estilos para la alerta */
+        .alert-success {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-auto min-h-screen flex items-center justify-center">
+
+    <!-- Menú de navegación -->
+    <nav class="navbar fixed w-full z-10 top-0 left-0">
+        <div class="flex justify-between items-center px-6 py-4">
+            <div class="text-2xl text-white font-bold">
+                <a href="#">Logo Spa y Belleza</a>
+            </div>
+            <div class="space-x-6">
+                <a href="#" class="hover:bg-blue-600 p-2 rounded">Reservar</a>
+                <a href="#" class="hover:bg-blue-600 p-2 rounded">Servicios</a>
+                <a href="#" class="hover:bg-blue-600 p-2 rounded">Empleados</a>
+                <a href="#" class="hover:bg-blue-600 p-2 rounded">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor principal del formulario -->
+    <main class="relative w-full max-w-4xl p-6 bg-white bg-opacity-80 rounded-lg shadow-xl animate-fade-in z-10 mt-24">
+        <!-- Título centrado arriba del formulario -->
+        <h1 class="text-4xl font-bold text-center text-blue-600 mb-8 p-4">
+            Reserva de Servicios de Belleza y Spa
+        </h1>
+        
+        <!-- Alerta de confirmación -->
+        <div id="confirmationMessage" class="alert-success">
+            ¡Reserva enviada con éxito! Nos pondremos en contacto contigo pronto.
+        </div>
+
+        <!-- Formulario -->
+        <form id="reservationForm" action="/submit_reservation" method="POST" class="space-y-6" onsubmit="return showConfirmation()">
+            <!-- Fila de nombre y celular -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Nombre -->
+                <div>
+                    <label for="nombre" class="block text-gray-700 font-medium">Nombre Completo</label>
+                    <input type="text" id="nombre" name="nombre" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required placeholder="Escribe tu nombre">
+                </div>
+
+                <!-- Celular -->
+                <div>
+                    <label for="celular" class="block text-gray-700 font-medium">Celular</label>
+                    <input type="tel" id="celular" name="celular" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required placeholder="Escribe tu número de celular">
+                </div>
+            </div>
+
+            <!-- Fila de fecha y hora -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <!-- Fecha -->
+                <div>
+                    <label for="fecha" class="block text-gray-700 font-medium">Fecha de Reserva</label>
+                    <input type="date" id="fecha" name="fecha" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+                </div>
+
+                <!-- Hora -->
+                <div>
+                    <label for="hora" class="block text-gray-700 font-medium">Hora de Reserva</label>
+                    <input type="time" id="hora" name="hora" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+                </div>
+            </div>
+
+            <!-- Servicio -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                    <label for="servicio" class="block text-gray-700 font-medium">Selecciona un Servicio</label>
+                    <select id="servicio" name="servicio" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+                        <option value="" disabled selected>Elige un servicio</option>
+                        <option value="masaje">Masaje</option>
+                        <option value="facial">Facial</option>
+                        <option value="manicure">Manicure</option>
+                        <option value="pedicure">Pedicure</option>
+                        <option value="corte">Corte de cabello</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="empleado" class="block text-gray-700 font-medium">Empleado</label>
+                    <select id="empleado" name="empleado" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" required>
+                        <option value="" disabled selected>Elige un empleado</option>
+                        <option value="Juan Pérez">Juan Pérez</option>
+                        <option value="María Rodríguez">María Rodríguez</option>
+                        <option value="Carlos López">Carlos López</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div>
+                <label for="comentarios" class="block text-gray-700 font-medium">Comentarios</label>
+                <textarea id="comentarios" name="comentarios" rows="4" class="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300" placeholder="Escribe tus comentarios o solicitudes especiales"></textarea>
+            </div>
+
+            <!-- Botón de enviar -->
+            <div class="text-center">
+                <button type="submit" class="submit-button px-6 py-2 rounded-lg">Enviar Reserva</button>
+            </div>
+        </form>
+        
+    </main>
+
+    <script>
+        // Función para mostrar el mensaje de confirmación después de enviar el formulario
+        function showConfirmation() {
+            // Evitar que el formulario se envíe antes de mostrar la alerta
+            event.preventDefault();
+            
+            // Mostrar el mensaje de éxito
+            document.getElementById('confirmationMessage').style.display = 'block';
+
+            // Simular un pequeño retraso antes de enviar el formulario
+            setTimeout(function() {
+                document.getElementById('reservationForm').submit();
+            }, 2000); // Retraso de 2 segundos
+        }
+    </script>
+</body>
+</html>
